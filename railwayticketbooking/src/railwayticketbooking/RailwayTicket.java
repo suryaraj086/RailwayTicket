@@ -13,6 +13,7 @@ public class RailwayTicket {
 	Map<Integer, List<Passenger>> ticket = new HashMap<>();
 	Map<Integer, List<Berth>> bookedslots = new HashMap<>();
 	Map<String, List<Passenger>> rwTickets = new HashMap<>();
+	Map<Integer, Ticket> ticketDetails = new HashMap<>();
 
 	int totalBerth = 0;
 	int totalRac = 0;
@@ -123,7 +124,8 @@ public class RailwayTicket {
 		List<Passenger> pass = ticket.get(id);
 		int size = 1;
 		nullChecker(pass);
-		String status = ticket.get(id).get(val).getStatus();
+		Passenger passobj = ticket.get(id).get(val);
+		String status = passobj.getStatus();
 		List<Berth> slots = bookedslots.get(id);
 		pass.remove(val);
 		if (status.equals("Booked")) {
@@ -150,21 +152,19 @@ public class RailwayTicket {
 						arr1.add(obj1);
 					}
 					slots.remove(0);
-					pass.remove(0);
-				} else {
-					if (rac.size() == 0) {
-						List<Berth> list = berth.get(slots.get(0).getType());
-						list.add(slots.get(0));
-						berth.put(slots.get(0).getType(), list);
-						slots.remove(0);
-					}
+				} else if (rac.size() == 0) {
+					List<Berth> list = berth.get(slots.get(0).getType());
+					list.add(slots.get(0));
+					berth.put(slots.get(0).getType(), list);
+					slots.remove(0);
 				}
 			}
 			return "removed";
-		} else if (status.equals("RAC")) {
+		} else if (status.equals("RAC"))
+
+		{
 			List<Passenger> rac = rwTickets.get("RAC");
 			List<Passenger> wait = rwTickets.get("Waiting");
-			ticket.remove(id);
 			for (int i = 0; i < size; i++) {
 				if (wait.size() != 0 && wait.get(0).getPassengerid() != id && wait.get(0).getStatus().equals("Waiting")
 						&& wait.get(0) != null) {
@@ -177,22 +177,22 @@ public class RailwayTicket {
 			}
 			for (int i = 0; i < rac.size(); i++) {
 				Passenger obj = rac.get(i);
-				if (obj.getPassengerid() == id) {
+				if (obj.getPassengerid() == id && passobj.getName().equals(obj.getName())) {
 					rac.remove(i);
+					break;
 				}
 			}
 			return "removed";
 		} else {
 			List<Passenger> waiting = rwTickets.get("Waiting");
-			ticket.remove(id);
 			for (int i = 0; i < waiting.size(); i++) {
-				if (waiting.get(i).getPassengerid() == id) {
+				if (waiting.get(i).getPassengerid() == id && passobj.getName().equals(waiting.get(i).getName())) {
 					waiting.remove(i);
-					return "removed";
+					break;
 				}
 			}
+			return "removed";
 		}
-		return "not found";
 	}
 
 	public String cancelTicket(int id) throws Exception {
@@ -227,20 +227,17 @@ public class RailwayTicket {
 					}
 					slots.remove(0);
 					pass.remove(0);
-				} else {
-					if (rac.size() == 0) {
-						List<Berth> list = berth.get(slots.get(0).getType());
-						list.add(slots.get(0));
-						berth.put(slots.get(0).getType(), list);
-						slots.remove(0);
-					}
+				} else if (rac.size() == 0) {
+					List<Berth> list = berth.get(slots.get(0).getType());
+					list.add(slots.get(0));
+					berth.put(slots.get(0).getType(), list);
+					slots.remove(0);
 				}
 			}
 			return "removed";
 		} else if (status.equals("RAC")) {
 			List<Passenger> rac = rwTickets.get("RAC");
 			List<Passenger> wait = rwTickets.get("Waiting");
-			ticket.remove(id);
 			for (int i = 0; i < size; i++) {
 				if (wait.size() != 0 && wait.get(0).getPassengerid() != id && wait.get(0).getStatus().equals("Waiting")
 						&& wait.get(0) != null) {
@@ -260,11 +257,9 @@ public class RailwayTicket {
 			return "removed";
 		} else {
 			List<Passenger> waiting = rwTickets.get("Waiting");
-			ticket.remove(id);
 			for (int i = 0; i < waiting.size(); i++) {
 				if (waiting.get(i).getPassengerid() == id) {
 					waiting.remove(i);
-					return "removed";
 				}
 			}
 		}
@@ -282,7 +277,7 @@ public class RailwayTicket {
 		nullChecker(list);
 		String out = "";
 		for (int i = 0; i < list.size(); i++) {
-			out += i + " " + list.get(i);
+			out += "press " + i + "to delete " + list.get(i);
 		}
 		return out;
 	}

@@ -47,6 +47,7 @@ public class RailwayRunner {
 					System.out.println("Enter the age");
 					int age = scan.nextInt();
 					Passenger pass = ObjectSetter.passengerSetter(name, id, age);
+//					Ticket ticketObj = ObjectSetter.ticketSetter(age, name, i, passNumber);
 					System.out.println("Passenger id " + id);
 					try {
 						System.out.println(obj.bookBerth(pass, id, type));
